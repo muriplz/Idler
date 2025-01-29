@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 // This class has been mostly made by afkdisplay mod
 @Mixin(ServerGamePacketListenerImpl.class)
-public abstract class ServerPlayNetworkMixin {
+public abstract class ServerGamePacketListenerImplMixin {
     @Shadow
     public ServerPlayer player;
 
@@ -34,6 +34,7 @@ public abstract class ServerPlayNetworkMixin {
 
             PlayerApi playerApi = new PlayerApi();
             if (playerApi.check(player.getUUID(), "idler.afk")) return;
+
             player.connection.disconnect(Component.literal("You have been kicked for being AFK too long."));
         }
     }

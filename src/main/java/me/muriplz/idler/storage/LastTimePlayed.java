@@ -4,76 +4,82 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 
 public class LastTimePlayed {
     private final File file;
-    private final Properties properties;
+    private final ConcurrentHashMap<UUID, Long> map = new ConcurrentHashMap<>();
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledFuture<?> scheduledSave;
 
     public LastTimePlayed(String filePath) throws IOException {
         this.file = new File(filePath);
-
-        // Check if the parent directories exist, create them if not
-        if (!file.getParentFile().exists()) {
-            boolean directoriesCreated = file.getParentFile().mkdirs();
-            if (!directoriesCreated) {
-                throw new IOException("Failed to create parent directories for: " + filePath);
-            }
-        }
-
-        // Check if the file exists, create it if not
-        if (!file.exists()) {
-            boolean fileCreated = file.createNewFile();
-            if (!fileCreated) {
-                throw new IOException("Failed to create file: " + filePath);
-            }
-        }
-
-        this.properties = new Properties();
-        this.properties.load(new FileInputStream(file));
+        ensureFileExists();
+        load();
     }
 
+    private void ensureFileExists() throws IOException {
+        File parentDir = file.getParentFile();
+        if (!parentDir.exists() && !parentDir.mkdirs()) {
+            throw new IOException("Failed to create directories: " + parentDir);
+        }
+        if (!file.exists() && !file.createNewFile()) {
+            throw new IOException("Failed to create file: " + file);
+        }
+    }
 
-    public Map<UUID, Long> getHashMap() throws IOException {
-        Properties properties = new Properties();
+    private synchronized void load() throws IOException {
+        Properties props = new Properties();
         try (FileInputStream fis = new FileInputStream(file)) {
-            properties.load(fis);
+            props.load(fis);
         }
-
-        Map<UUID, Long> hashMap = new ConcurrentHashMap<>();
-        for (String key : properties.stringPropertyNames()) {
-            hashMap.put(UUID.fromString(key), Long.parseLong(properties.getProperty(key)));
+        map.clear();
+        for (String key : props.stringPropertyNames()) {
+            UUID uuid = UUID.fromString(key);
+            long time = Long.parseLong(props.getProperty(key));
+            map.put(uuid, time);
         }
-        return hashMap;
     }
 
-    public void setHashMap(Map<UUID, Long> hashMap) throws IOException {
-        for (Map.Entry<UUID, Long> entry : hashMap.entrySet()) {
-            properties.setProperty(entry.getKey().toString(), entry.getValue().toString());
-        }
-        properties.store(new FileOutputStream(file), null);
-    }
+    private synchronized void save() {
+        Properties props = new Properties();
+        map.forEach((uuid, time) -> props.setProperty(uuid.toString(), String.valueOf(time)));
 
-    public void addElement(UUID playerID, long lastTimePlayed) {
-        try {
-            Map<UUID, Long> hashMap = getHashMap();
-            hashMap.put(playerID, lastTimePlayed);
-            setHashMap(hashMap);
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            props.store(fos, "Last played times");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public long getElement(UUID playerID) {
-        try {
-            return getHashMap().getOrDefault(playerID, -1L);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return -1L;
+    public void addElement(UUID playerId, long lastTimePlayed) {
+        map.put(playerId, lastTimePlayed);
+        scheduleDelayedSave();
+    }
+
+    private synchronized void scheduleDelayedSave() {
+        if (scheduledSave != null && !scheduledSave.isDone()) {
+            scheduledSave.cancel(false);
         }
+        scheduledSave = scheduler.schedule(this::save, 5, TimeUnit.SECONDS);
+    }
+
+    public long getElement(UUID playerId) {
+        return map.getOrDefault(playerId, -1L);
+    }
+
+    public void shutdown() {
+        scheduler.shutdown();
+        try {
+            if (!scheduler.awaitTermination(10, TimeUnit.SECONDS)) {
+                scheduler.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            scheduler.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
+        save(); // Final save on shutdown
     }
 }
-

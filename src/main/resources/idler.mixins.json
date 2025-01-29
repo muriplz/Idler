@@ -6,8 +6,8 @@
   "refmap": "idler.refmap.json",
   "mixins": [
     "MinecraftServerMixin",
-    "ServerPlayerMixin",
-    "ServerPlayNetworkMixin"
+    "ServerGamePacketListenerImplMixin",
+    "ServerPlayerMixin"
   ],
   "client": [
   ],

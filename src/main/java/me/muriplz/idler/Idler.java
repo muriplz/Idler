@@ -11,6 +11,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -44,9 +45,14 @@ public class Idler {
     }
 
     @SubscribeEvent
+    public void onServerStopped(ServerStoppedEvent event) {
+        lastTimePlayed.shutdown();
+    }
+
+    @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
 
-        player.resetLastActionTime();
+        lastTimePlayed.addElement(player.getUUID(), System.currentTimeMillis());
     }
 }

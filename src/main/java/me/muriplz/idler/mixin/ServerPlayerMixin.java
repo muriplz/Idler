@@ -81,4 +81,9 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayer {
 
         cir.setReturnValue(name);
     }
+
+    @Inject(method = "getLastActionTime", at = @At("HEAD"), cancellable = true)
+    private void onGetLastActionTime(CallbackInfoReturnable<Long> cir) {
+        cir.setReturnValue(Idler.lastTimePlayed.getElement(stuff$player.getUUID()));
+    }
 }
