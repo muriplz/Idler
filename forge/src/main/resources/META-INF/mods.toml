@@ -1,7 +1,7 @@
 modLoader = "javafml"
-loaderVersion = "[2,)"
+loaderVersion = "[47,)"
 #issueTrackerURL = ""
-license = "All Rights Reserved"
+license = "MIT"
 
 [[mods]]
 modId = "idler"
@@ -14,25 +14,22 @@ AFK Management mod, server side
 #logoFile = ""
 
 [[dependencies.idler]]
-modId = "neoforge"
-type = "required"
-versionRange = "[21,)"
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
 ordering = "NONE"
-side = "SERVER"
+side = "BOTH"
 
 [[dependencies.idler]]
 modId = "minecraft"
-type = "required"
-versionRange = "[1.21.1,)"
+mandatory = true
+versionRange = "[1.20.1,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.idler]]
 modId = "luckperms"
-type = "required"
+mandatory = true
 versionRange = "[5.3.0,)"
 ordering = "NONE"
 side = "SERVER"
-
-[[mixins]]
-config = "idler.mixins.json"
