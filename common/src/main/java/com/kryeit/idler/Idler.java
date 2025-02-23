@@ -17,16 +17,12 @@ public final class Idler {
     public static LastTimePlayed lastTimePlayed;
 
     public static void init() {
-        try {
-            ConfigReader.readFile(Path.of("config/" + MOD_ID));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public static void onServerStart() {
         try {
             lastTimePlayed = new LastTimePlayed("config/" + MOD_ID + "/last_played.txt");
+            ConfigReader.readFile(Path.of("config/" + MOD_ID));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -43,8 +39,6 @@ public final class Idler {
     public static void resetLastTime(ServerPlayer player) {
         lastTimePlayed.addElement(player.getUUID(), System.currentTimeMillis());
     }
-
-    //and login
 
     public static void onPlayerPlaceBlock(ServerPlayer player) {
         lastTimePlayed.addElement(player.getUUID(), System.currentTimeMillis());

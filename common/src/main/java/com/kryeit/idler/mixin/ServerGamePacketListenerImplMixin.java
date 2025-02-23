@@ -4,6 +4,7 @@ import com.kryeit.idler.Idler;
 import com.kryeit.idler.PlayerApi;
 import com.kryeit.idler.afk.AfkPlayer;
 import com.kryeit.idler.afk.Config;
+import com.kryeit.idler.config.ConfigReader;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,6 +32,11 @@ public abstract class ServerGamePacketListenerImplMixin {
         if (afkDuration > timeoutSeconds * 1000L) {
             afkPlayer.idler$enableAfk();
             Idler.lastTimePlayed.addElement(player.getUUID(), System.currentTimeMillis());
+
+            String thing = ConfigReader.START_KICK_THRESHOLD;
+            int threshold = Integer.parseInt(thing.split("\\+")[0]) + Integer.parseInt(thing.split("\\+")[1]);
+            int onlinePlayers = player.getServer().getPlayerList().getPlayers().size();
+            if (onlinePlayers < threshold) return;
 
             PlayerApi playerApi = new PlayerApi();
             if (playerApi.check(player.getUUID(), "idler.afk")) return;

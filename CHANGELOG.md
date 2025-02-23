@@ -1,3 +1,11 @@
+# 1.2
+- Support for Fabric
+- Added "start-kick-threshold" option to config.json.
+
+`%server-slots%-3` means that when the server has 3 free slots it starts to kick people
+
+*Set to -1 to disable*
+
 # 1.1
 - Reworked the last_played.json file to be more efficient
 - Fixed using Util.getMillis() instead of System.currentTimeMillis()
