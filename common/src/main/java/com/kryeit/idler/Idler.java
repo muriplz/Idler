@@ -5,10 +5,8 @@ import com.kryeit.idler.config.ConfigReader;
 import com.kryeit.idler.storage.LastTimePlayed;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
-import javax.swing.text.html.parser.Entity;
 import java.io.IOException;
 import java.nio.file.Path;
 

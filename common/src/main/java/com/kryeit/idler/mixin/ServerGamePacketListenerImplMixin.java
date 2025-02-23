@@ -1,6 +1,7 @@
 package com.kryeit.idler.mixin;
 
 import com.kryeit.idler.Idler;
+import com.kryeit.idler.MinecraftServerSupplier;
 import com.kryeit.idler.PlayerApi;
 import com.kryeit.idler.afk.AfkPlayer;
 import com.kryeit.idler.afk.Config;
@@ -33,7 +34,10 @@ public abstract class ServerGamePacketListenerImplMixin {
             afkPlayer.idler$enableAfk();
             Idler.lastTimePlayed.addElement(player.getUUID(), System.currentTimeMillis());
 
-            String thing = ConfigReader.START_KICK_THRESHOLD;
+            String thing = ConfigReader.START_KICK_THRESHOLD.replace(
+                    "%server-slots%",
+                    MinecraftServerSupplier.getServer().getMaxPlayers() + ""
+            );
             int threshold = Integer.parseInt(thing.split("\\+")[0]) + Integer.parseInt(thing.split("\\+")[1]);
             int onlinePlayers = player.getServer().getPlayerList().getPlayers().size();
             if (onlinePlayers < threshold) return;

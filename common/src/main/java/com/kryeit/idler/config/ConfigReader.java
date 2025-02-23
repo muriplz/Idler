@@ -2,7 +2,6 @@ package com.kryeit.idler.config;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.kryeit.idler.MinecraftServerSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,10 +23,7 @@ public class ConfigReader {
         JsonObject configObject = JsonParser.parseString(config).getAsJsonObject();
 
         IDLE_TIMEOUT_SECONDS = configObject.get("idle-timeout").getAsInt();
-        START_KICK_THRESHOLD = configObject.get("start-kick-threshold").getAsString().replace(
-                "%server-slots%",
-                MinecraftServerSupplier.getServer().getMaxPlayers() + ""
-        );
+        START_KICK_THRESHOLD = configObject.get("start-kick-threshold").getAsString();
     }
 
     public static String readOrCopyFile(Path path, String exampleFile) throws IOException {
