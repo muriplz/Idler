@@ -1,0 +1,38 @@
+modLoader = "javafml"
+loaderVersion = "[2,)"
+#issueTrackerURL = ""
+license = "All Rights Reserved"
+
+[[mods]]
+modId = "idler"
+version = "${version}"
+displayName = "Idler"
+authors = "MuriPlz"
+description = '''
+AFK Management mod, server side
+'''
+#logoFile = ""
+
+[[dependencies.idler]]
+modId = "neoforge"
+type = "required"
+versionRange = "[21,)"
+ordering = "NONE"
+side = "SERVER"
+
+[[dependencies.idler]]
+modId = "minecraft"
+type = "required"
+versionRange = "[1.21.1,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.idler]]
+modId = "luckperms"
+type = "required"
+versionRange = "[5.3.0,)"
+ordering = "NONE"
+side = "SERVER"
+
+[[mixins]]
+config = "idler.mixins.json"
