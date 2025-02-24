@@ -2,7 +2,6 @@ package com.kryeit.idler.config;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.kryeit.idler.MinecraftServerSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
