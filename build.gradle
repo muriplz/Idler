@@ -48,3 +48,4 @@ subprojects {
         it.options.release = 17
     }
 }
+
