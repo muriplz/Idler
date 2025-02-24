@@ -38,10 +38,12 @@ public abstract class ServerGamePacketListenerImplMixin {
                     "%server-slots%",
                     MinecraftServerSupplier.getServer().getMaxPlayers() + ""
             );
-            int threshold = Integer.parseInt(thing.split("\\+")[0]) + Integer.parseInt(thing.split("\\+")[1]);
-            int onlinePlayers = player.getServer().getPlayerList().getPlayers().size();
-            if (onlinePlayers < threshold) return;
-
+            
+            if (!thing.equals("-1")) {
+                int threshold = Integer.parseInt(thing.split("\\+")[0]) + Integer.parseInt(thing.split("\\+")[1]);
+                int onlinePlayers = player.getServer().getPlayerList().getPlayers().size();
+                if (onlinePlayers < threshold) return;
+            }
             PlayerApi playerApi = new PlayerApi();
             if (playerApi.check(player.getUUID(), "idler.afk")) return;
 
