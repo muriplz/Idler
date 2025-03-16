@@ -1,4 +1,4 @@
 {
   "idle-timeout": 300,
-  "start-kick-threshold": "%max-slots%-3"
+  "start-kick-free-slots": "21"
 }

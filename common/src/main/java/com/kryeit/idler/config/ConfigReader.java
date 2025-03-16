@@ -16,14 +16,14 @@ public class ConfigReader {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigReader.class);
 
     public static int IDLE_TIMEOUT_SECONDS;
-    public static String START_KICK_THRESHOLD;
+    public static String START_KICK_FREE_SLOTS;
 
     public static void readFile(Path path) throws IOException {
         String config = readOrCopyFile(path.resolve("config.json"), "/config.json");
         JsonObject configObject = JsonParser.parseString(config).getAsJsonObject();
 
         IDLE_TIMEOUT_SECONDS = configObject.get("idle-timeout").getAsInt();
-        START_KICK_THRESHOLD = configObject.get("start-kick-threshold").getAsString();
+        START_KICK_FREE_SLOTS = configObject.get("start-kick-free-slots").getAsString();
     }
 
     public static String readOrCopyFile(Path path, String exampleFile) throws IOException {

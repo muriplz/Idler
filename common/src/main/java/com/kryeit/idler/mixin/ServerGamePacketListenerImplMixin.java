@@ -35,16 +35,10 @@ public abstract class ServerGamePacketListenerImplMixin {
             afkPlayer.idler$enableAfk();
             Idler.lastTimePlayed.addElement(player.getUUID(), System.currentTimeMillis());
 
-            String thing = ConfigReader.START_KICK_THRESHOLD.replace(
-                    "%server-slots%",
-                    MinecraftServerSupplier.getServer().getMaxPlayers() + ""
-            );
-            
-            if (!thing.equals("-1")) {
-                int threshold = Integer.parseInt(thing.split("\\+")[0]) + Integer.parseInt(thing.split("\\+")[1]);
-                int onlinePlayers = player.getServer().getPlayerList().getPlayers().size();
-                if (onlinePlayers < threshold) return;
-            }
+            int threshold = Integer.parseInt(ConfigReader.START_KICK_FREE_SLOTS);
+            int serverFreeSlots = MinecraftServerSupplier.getServer().getPlayerList().getMaxPlayers() - MinecraftServerSupplier.getServer().getPlayerList().getPlayers().size();
+            if (serverFreeSlots >= threshold) return;
+
             PlayerApi playerApi = new PlayerApi();
             if (playerApi.check(player.getUUID(), "idler.afk")) return;
 
