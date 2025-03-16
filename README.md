@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="200" src="https://github.com/muriplz/idler/blob/master/src/main/resources/assets/idler/icon.jpg">
+  <img width="200" src="https://github.com/muriplz/Idler/blob/1.21.1/common/src/main/resources/assets/idler/icon.png">
 </p>
 
 <h1 align="center">Idler - AFK management for servers<br>
