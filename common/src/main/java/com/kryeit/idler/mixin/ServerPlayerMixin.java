@@ -41,7 +41,6 @@ public abstract class ServerPlayerMixin extends Entity implements AfkPlayer {
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void onPlayerLogin(CallbackInfo ci) {
-        System.out.println("Player " + idler$player.getName().getString() + " has joined the game");
         Idler.lastTimePlayed.addElement(idler$player.getUUID(), System.currentTimeMillis());
     }
 
